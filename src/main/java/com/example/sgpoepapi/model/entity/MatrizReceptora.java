@@ -1,0 +1,15 @@
+package com.example.sgpoepapi.model.entity;
+
+import jakarta.persistence.Entity;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Entity
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class MatrizReceptora extends Animal{
+    private Integer numero;
+    private Boolean prenha;
+}
