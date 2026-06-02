@@ -1,4 +1,7 @@
 package com.example.sgpoepapi.model.repository;
 
-public interface FIVRepositorio {
+import com.example.sgpoepapi.model.entity.FIV;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface FIVRepositorio extends JpaRepository<FIV, Long> {
 }

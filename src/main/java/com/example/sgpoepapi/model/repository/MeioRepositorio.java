@@ -1,4 +1,7 @@
 package com.example.sgpoepapi.model.repository;
 
-public interface MeioRepositorio {
+import com.example.sgpoepapi.model.entity.Meio;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface MeioRepositorio extends JpaRepository<Meio, Long> {
 }

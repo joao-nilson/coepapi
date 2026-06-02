@@ -1,4 +1,7 @@
 package com.example.sgpoepapi.model.repository;
 
-public interface SincronizaçãoRepositorio {
+import com.example.sgpoepapi.model.entity.Sincronizacao;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface SincronizaçãoRepositorio extends JpaRepository<Sincronizacao, Long> {
 }

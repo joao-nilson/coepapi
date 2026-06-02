@@ -1,4 +1,7 @@
 package com.example.sgpoepapi.model.repository;
 
-public interface RacaRepositorio {
+import com.example.sgpoepapi.model.entity.Raca;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface RacaRepositorio extends JpaRepository<Raca, Long> {
 }

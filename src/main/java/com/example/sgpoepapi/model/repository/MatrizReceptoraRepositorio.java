@@ -1,4 +1,7 @@
 package com.example.sgpoepapi.model.repository;
 
-public interface MatrizReceptoraRepositorio {
+import com.example.sgpoepapi.model.entity.MatrizReceptora;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface MatrizReceptoraRepositorio extends JpaRepository<MatrizReceptora, Long> {
 }

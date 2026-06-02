@@ -1,4 +1,7 @@
 package com.example.sgpoepapi.model.repository;
 
-public interface CongelamentoRep {
+import com.example.sgpoepapi.model.entity.Congelamento;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface CongelamentoRep extends JpaRepository<Congelamento, Long> {
 }
