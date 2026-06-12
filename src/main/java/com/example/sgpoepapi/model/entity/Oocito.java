@@ -18,4 +18,7 @@ public class Oocito {
     private MatrizDoadora mae;
     private Boolean viavel;
     private Float precoOocito;
+
+    @ManyToOne
+    private OocitoClassificacao classificacao;
 }

@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Data
 @AllArgsConstructor
@@ -12,4 +14,6 @@ import lombok.NoArgsConstructor;
 public class MatrizReceptora extends Animal{
     private Integer numero;
     private Boolean prenha;
+    private String dataNascimento;
+    private Integer nOocitos;
 }
