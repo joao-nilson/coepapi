@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -20,7 +19,7 @@ public class FIV {
 
     private Integer nOocitosFecundados;
     private Integer nEmbrioes;
-    private LocalDateTime dataFIV;
+    private String dataFIV;
     private Float precoFIV;
 
     @ManyToOne

@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -24,5 +23,5 @@ public class TransferenciaEmbrioes extends Etapa {
     @ManyToOne
     private PrestadoraServico tecnicoPrestadora;
 
-    private LocalDateTime horaEntregaEmb;
+    private String horaEntregaEmb;
 }
