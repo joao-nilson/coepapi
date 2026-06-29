@@ -49,7 +49,7 @@ public class PrestadoraServicoService {
         if (prestadoraServico.getEndereco() == null || prestadoraServico.getEndereco().trim().equals("")) {
             throw new RegraNegocioException("Endereço inválido");
         }
-        if (prestadoraServico.getNum_registro_mapa() == null || prestadoraServico.getNum_registro_mapa().trim().equals("")) {
+        if (prestadoraServico.getNumRegistroMapa() == null || prestadoraServico.getNumRegistroMapa().trim().equals("")) {
             throw new RegraNegocioException("Número de registro MAPA inválido");
         }
         if (prestadoraServico.getTelefone() == null || prestadoraServico.getTelefone().trim().equals("")) {

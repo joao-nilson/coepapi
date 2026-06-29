@@ -4,8 +4,8 @@ import com.example.sgpoepapi.model.entity.Congelamento;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.modelmapper.ModelMapper;
 
-import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -14,16 +14,11 @@ public class CongelamentoDTO {
     private Long id;
     private Long embriaoId;
     private Long metodoId;
-    private LocalDateTime dataCong;
+    private String dataCong;
     private Float precoCongelamento;
 
     public static CongelamentoDTO create(Congelamento congelamento) {
-        CongelamentoDTO dto = new CongelamentoDTO();
-        dto.setId(congelamento.getId());
-        if (congelamento.getEmbriao() != null) dto.setEmbriaoId(congelamento.getEmbriao().getId());
-        if (congelamento.getMetodo() != null) dto.setMetodoId(congelamento.getMetodo().getId());
-        dto.setDataCong(congelamento.getDataCong());
-        dto.setPrecoCongelamento(congelamento.getPrecoCongelamento());
-        return dto;
+        ModelMapper modelMapper = new ModelMapper();
+        return modelMapper.map(congelamento, CongelamentoDTO.class);
     }
 }

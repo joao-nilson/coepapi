@@ -4,8 +4,8 @@ import com.example.sgpoepapi.model.entity.MatrizDoadora;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.modelmapper.ModelMapper;
 
-import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -17,23 +17,13 @@ public class MatrizDoadoraDTO {
     private Long racaId;
     private Long proprietarioId;
     private String apelido;
-    private LocalDateTime dataNascimento;
+    private String dataNascimento;
     private Integer numOocitos;
     private Boolean viavel;
     private Float precoOocito;
 
     public static MatrizDoadoraDTO create(MatrizDoadora doadora) {
-        MatrizDoadoraDTO dto = new MatrizDoadoraDTO();
-        dto.setId(doadora.getId());
-        dto.setNome(doadora.getNome());
-        dto.setRGD(doadora.getRGD());
-        if (doadora.getRaca() != null) dto.setRacaId(doadora.getRaca().getId());
-        if (doadora.getProprietario() != null) dto.setProprietarioId(doadora.getProprietario().getId());
-        dto.setApelido(doadora.getApelido());
-        dto.setDataNascimento(doadora.getDataNascimento());
-        dto.setNumOocitos(doadora.getNumOocitos());
-        dto.setViavel(doadora.getViavel());
-        dto.setPrecoOocito(doadora.getPrecoOocito());
-        return dto;
+        ModelMapper modelMapper = new ModelMapper();
+        return modelMapper.map(doadora, MatrizDoadoraDTO.class);
     }
 }

@@ -4,6 +4,7 @@ import com.example.sgpoepapi.model.entity.Meio;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.modelmapper.ModelMapper;
 
 @Data
 @AllArgsConstructor
@@ -16,12 +17,7 @@ public class MeioDTO {
     private Float quantidade;
 
     public static MeioDTO create(Meio meio) {
-        MeioDTO dto = new MeioDTO();
-        dto.setId(meio.getId());
-        dto.setTipoDeMeio(meio.getTipoDeMeio());
-        dto.setDescricao(meio.getDescricao());
-        dto.setPrecoDeMeio(meio.getPrecoDeMeio());
-        dto.setQuantidade(meio.getQuantidade());
-        return dto;
+        ModelMapper modelMapper = new ModelMapper();
+        return modelMapper.map(meio, MeioDTO.class);
     }
 }

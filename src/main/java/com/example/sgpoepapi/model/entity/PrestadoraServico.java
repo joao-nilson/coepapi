@@ -20,7 +20,7 @@ public class PrestadoraServico {
     private String nome;
     private String CNPJ;
     private String endereco;
-    private String num_registro_mapa;
+    private String numRegistroMapa;
     private String telefone;
     private String email;
     private String instagram;

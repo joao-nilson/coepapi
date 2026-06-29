@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -21,6 +20,6 @@ public class Congelamento {
     @ManyToOne
     private MetodoCongelamento metodo;
 
-    private LocalDateTime dataCong;
+    private String dataCong;
     private Float precoCongelamento;
 }

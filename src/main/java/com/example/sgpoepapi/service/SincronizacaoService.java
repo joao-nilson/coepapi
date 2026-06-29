@@ -2,7 +2,7 @@ package com.example.sgpoepapi.service;
 
 import com.example.sgpoepapi.exception.RegraNegocioException;
 import com.example.sgpoepapi.model.entity.Sincronizacao;
-import com.example.sgpoepapi.model.repository.SincronizaçãoRepositorio;
+import com.example.sgpoepapi.model.repository.SincronizacaoRepositorio;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,9 +13,9 @@ import java.util.Optional;
 @Service
 public class SincronizacaoService {
 
-    private SincronizaçãoRepositorio repository;
+    private SincronizacaoRepositorio repository;
 
-    public SincronizacaoService(SincronizaçãoRepositorio repository) {
+    public SincronizacaoService(SincronizacaoRepositorio repository) {
         this.repository = repository;
     }
 

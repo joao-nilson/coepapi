@@ -4,6 +4,7 @@ import com.example.sgpoepapi.model.entity.Cliente;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.modelmapper.ModelMapper;
 
 @Data
 @AllArgsConstructor
@@ -18,14 +19,7 @@ public class ClienteDTO {
     private String email;
 
     public static ClienteDTO create(Cliente cliente) {
-        ClienteDTO dto = new ClienteDTO();
-        dto.setId(cliente.getId());
-        dto.setNome(cliente.getNome());
-        dto.setCPF(cliente.getCPF());
-        dto.setInscricaoEstadual(cliente.getInscriaao_estadual());
-        dto.setEndereco(cliente.getEndereco());
-        dto.setTelefone(cliente.getTelefone());
-        dto.setEmail(cliente.getEmail());
-        return dto;
+        ModelMapper modelMapper = new ModelMapper();
+        return modelMapper.map(cliente, ClienteDTO.class);
     }
 }

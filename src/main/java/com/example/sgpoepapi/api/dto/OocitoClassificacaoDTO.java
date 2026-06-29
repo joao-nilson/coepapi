@@ -4,6 +4,7 @@ import com.example.sgpoepapi.model.entity.OocitoClassificacao;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.modelmapper.ModelMapper;
 
 @Data
 @AllArgsConstructor
@@ -14,10 +15,7 @@ public class OocitoClassificacaoDTO {
     private String descricaoClass;
 
     public static OocitoClassificacaoDTO create(OocitoClassificacao oocitoClassificacao) {
-        OocitoClassificacaoDTO dto = new OocitoClassificacaoDTO();
-        dto.setId(oocitoClassificacao.getId());
-        dto.setClassificacao(oocitoClassificacao.getClassificacao());
-        dto.setDescricaoClass(oocitoClassificacao.getDescricaoClass());
-        return dto;
+        ModelMapper modelMapper = new ModelMapper();
+        return modelMapper.map(oocitoClassificacao, OocitoClassificacaoDTO.class);
     }
 }

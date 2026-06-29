@@ -13,6 +13,11 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,6 +27,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/v1/embrioes")
 @RequiredArgsConstructor
 @CrossOrigin
+@Tag(name = "Embriões", description = "API de gerenciamento de embriões")
 public class EmbriaoController {
 
     private final EmbriaoService service;
@@ -29,35 +35,51 @@ public class EmbriaoController {
     private final QualidadeEmbriaoService qualidadeEmbriaoService;
 
     @GetMapping()
-    public ResponseEntity<?> get() {
+    public ResponseEntity get() {
         List<Embriao> embrioes = service.getEmbrioes();
         return ResponseEntity.ok(embrioes.stream().map(EmbriaoDTO::create).collect(Collectors.toList()));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> get(@PathVariable("id") Long id) {
+    @Operation(summary = "Obter detalhes de embrião pelo id")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Embrião encontrado"),
+            @ApiResponse(responseCode = "404", description = "Embrião não encontrado")
+    })
+    public ResponseEntity get(@Parameter(description = "Id do embrião") @PathVariable("id") Long id) {
         Optional<Embriao> embriao = service.getEmbriaoById(id);
-        if (embriao.isEmpty()) {
-            return new ResponseEntity<>("Embrião não encontrado", HttpStatus.NOT_FOUND);
+        if (!embriao.isPresent()) {
+            return new ResponseEntity("Embrião não encontrado", HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(embriao.map(EmbriaoDTO::create));
     }
 
     @PostMapping()
-    public ResponseEntity<?> post(@RequestBody EmbriaoDTO dto) {
+    @Operation(summary = "Salvar um novo registro de embrião")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Embrião salvo com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Erro de validação")
+    })
+    public ResponseEntity post(@RequestBody EmbriaoDTO dto) {
         try {
             Embriao embriao = converter(dto);
             embriao = service.salvar(embriao);
-            return new ResponseEntity<>(embriao, HttpStatus.CREATED);
+            return new ResponseEntity(embriao, HttpStatus.CREATED);
         } catch (RegraNegocioException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<?> atualizar(@PathVariable("id") Long id, @RequestBody EmbriaoDTO dto) {
-        if (service.getEmbriaoById(id).isEmpty()) {
-            return new ResponseEntity<>("Embrião não encontrado", HttpStatus.NOT_FOUND);
+    @Operation(summary = "Atualizar um registro de embrião")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Embrião atualizado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Erro de validação"),
+            @ApiResponse(responseCode = "404", description = "Embrião não encontrado")
+    })
+    public ResponseEntity atualizar(@Parameter(description = "Id do embrião") @PathVariable("id") Long id, @RequestBody EmbriaoDTO dto) {
+        if (!service.getEmbriaoById(id).isPresent()) {
+            return new ResponseEntity("Embrião não encontrado", HttpStatus.NOT_FOUND);
         }
         try {
             Embriao embriao = converter(dto);
@@ -70,14 +92,20 @@ public class EmbriaoController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<?> excluir(@PathVariable("id") Long id) {
+    @Operation(summary = "Excluir um registro de embrião")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Embrião excluído com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Erro ao excluir"),
+            @ApiResponse(responseCode = "404", description = "Embrião não encontrado")
+    })
+    public ResponseEntity excluir(@Parameter(description = "Id do embrião") @PathVariable("id") Long id) {
         Optional<Embriao> embriao = service.getEmbriaoById(id);
-        if (embriao.isEmpty()) {
-            return new ResponseEntity<>("Embrião não encontrado", HttpStatus.NOT_FOUND);
+        if (!embriao.isPresent()) {
+            return new ResponseEntity("Embrião não encontrado", HttpStatus.NOT_FOUND);
         }
         try {
             service.excluir(embriao.get());
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
         } catch (RegraNegocioException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

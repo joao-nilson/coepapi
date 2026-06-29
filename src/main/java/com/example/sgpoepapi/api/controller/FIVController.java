@@ -15,6 +15,11 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.util.List;
 import java.util.Objects;
@@ -25,6 +30,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/v1/fivs")
 @RequiredArgsConstructor
 @CrossOrigin
+@Tag(name = "FIV", description = "API de gerenciamento de FIVs")
 public class FIVController {
 
     private final FIVService service;
@@ -33,35 +39,51 @@ public class FIVController {
     private final EmbriaoService embriaoService;
 
     @GetMapping()
-    public ResponseEntity<?> get() {
+    public ResponseEntity get() {
         List<FIV> fivs = service.getFIVs();
         return ResponseEntity.ok(fivs.stream().map(FivDTO::create).collect(Collectors.toList()));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> get(@PathVariable("id") Long id) {
+    @Operation(summary = "Obter detalhes de FIV pelo id")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "FIV encontrada"),
+            @ApiResponse(responseCode = "404", description = "FIV não encontrada")
+    })
+    public ResponseEntity get(@Parameter(description = "Id da FIV") @PathVariable("id") Long id) {
         Optional<FIV> fiv = service.getFIVById(id);
-        if (fiv.isEmpty()) {
-            return new ResponseEntity<>("FIV não encontrada", HttpStatus.NOT_FOUND);
+        if (!fiv.isPresent()) {
+            return new ResponseEntity("FIV não encontrada", HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(fiv.map(FivDTO::create));
     }
 
     @PostMapping()
-    public ResponseEntity<?> post(@RequestBody FivDTO dto) {
+    @Operation(summary = "Salvar um novo registro de FIV")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "FIV salva com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Erro de validação")
+    })
+    public ResponseEntity post(@RequestBody FivDTO dto) {
         try {
             FIV fiv = converter(dto);
             fiv = service.salvar(fiv);
-            return new ResponseEntity<>(fiv, HttpStatus.CREATED);
+            return new ResponseEntity(fiv, HttpStatus.CREATED);
         } catch (RegraNegocioException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<?> atualizar(@PathVariable("id") Long id, @RequestBody FivDTO dto) {
-        if (service.getFIVById(id).isEmpty()) {
-            return new ResponseEntity<>("FIV não encontrada", HttpStatus.NOT_FOUND);
+    @Operation(summary = "Atualizar um registro de FIV")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "FIV atualizada com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Erro de validação"),
+            @ApiResponse(responseCode = "404", description = "FIV não encontrada")
+    })
+    public ResponseEntity atualizar(@Parameter(description = "Id da FIV") @PathVariable("id") Long id, @RequestBody FivDTO dto) {
+        if (!service.getFIVById(id).isPresent()) {
+            return new ResponseEntity("FIV não encontrada", HttpStatus.NOT_FOUND);
         }
         try {
             FIV fiv = converter(dto);
@@ -74,14 +96,20 @@ public class FIVController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<?> excluir(@PathVariable("id") Long id) {
+    @Operation(summary = "Excluir um registro de FIV")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "FIV excluída com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Erro ao excluir"),
+            @ApiResponse(responseCode = "404", description = "FIV não encontrada")
+    })
+    public ResponseEntity excluir(@Parameter(description = "Id da FIV") @PathVariable("id") Long id) {
         Optional<FIV> fiv = service.getFIVById(id);
-        if (fiv.isEmpty()) {
-            return new ResponseEntity<>("FIV não encontrada", HttpStatus.NOT_FOUND);
+        if (!fiv.isPresent()) {
+            return new ResponseEntity("FIV não encontrada", HttpStatus.NOT_FOUND);
         }
         try {
             service.excluir(fiv.get());
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
         } catch (RegraNegocioException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

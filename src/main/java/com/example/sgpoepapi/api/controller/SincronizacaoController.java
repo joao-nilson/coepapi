@@ -9,6 +9,11 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.util.List;
 import java.util.Objects;
@@ -19,6 +24,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/v1/sincronizacoes")
 @RequiredArgsConstructor
 @CrossOrigin
+@Tag(name = "Sincronizações", description = "API de gerenciamento de sincronizações")
 public class SincronizacaoController {
 
     private final SincronizacaoService service;
@@ -28,35 +34,51 @@ public class SincronizacaoController {
     private final MatrizReceptoraService matrizReceptoraService;
 
     @GetMapping()
-    public ResponseEntity<?> get() {
+    public ResponseEntity get() {
         List<Sincronizacao> sincronizacoes = service.getSincronizacoes();
         return ResponseEntity.ok(sincronizacoes.stream().map(SincronizacaoDTO::create).collect(Collectors.toList()));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> get(@PathVariable("id") Long id) {
+    @Operation(summary = "Obter detalhes de sincronização pelo id")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Sincronização encontrada"),
+            @ApiResponse(responseCode = "404", description = "Sincronização não encontrada")
+    })
+    public ResponseEntity get(@Parameter(description = "Id da sincronização") @PathVariable("id") Long id) {
         Optional<Sincronizacao> sincronizacao = service.getSincronizacaoById(id);
-        if (sincronizacao.isEmpty()) {
-            return new ResponseEntity<>("Sincronização não encontrada", HttpStatus.NOT_FOUND);
+        if (!sincronizacao.isPresent()) {
+            return new ResponseEntity("Sincronização não encontrada", HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(sincronizacao.map(SincronizacaoDTO::create));
     }
 
     @PostMapping()
-    public ResponseEntity<?> post(@RequestBody SincronizacaoDTO dto) {
+    @Operation(summary = "Salvar um novo registro de sincronização")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Sincronização salva com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Erro de validação")
+    })
+    public ResponseEntity post(@RequestBody SincronizacaoDTO dto) {
         try {
             Sincronizacao sincronizacao = converter(dto);
             sincronizacao = service.salvar(sincronizacao);
-            return new ResponseEntity<>(sincronizacao, HttpStatus.CREATED);
+            return new ResponseEntity(sincronizacao, HttpStatus.CREATED);
         } catch (RegraNegocioException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<?> atualizar(@PathVariable("id") Long id, @RequestBody SincronizacaoDTO dto) {
-        if (service.getSincronizacaoById(id).isEmpty()) {
-            return new ResponseEntity<>("Sincronização não encontrada", HttpStatus.NOT_FOUND);
+    @Operation(summary = "Atualizar um registro de sincronização")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Sincronização atualizada com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Erro de validação"),
+            @ApiResponse(responseCode = "404", description = "Sincronização não encontrada")
+    })
+    public ResponseEntity atualizar(@Parameter(description = "Id da sincronização") @PathVariable("id") Long id, @RequestBody SincronizacaoDTO dto) {
+        if (!service.getSincronizacaoById(id).isPresent()) {
+            return new ResponseEntity("Sincronização não encontrada", HttpStatus.NOT_FOUND);
         }
         try {
             Sincronizacao sincronizacao = converter(dto);
@@ -69,14 +91,20 @@ public class SincronizacaoController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<?> excluir(@PathVariable("id") Long id) {
+    @Operation(summary = "Excluir um registro de sincronização")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Sincronização excluída com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Erro ao excluir"),
+            @ApiResponse(responseCode = "404", description = "Sincronização não encontrada")
+    })
+    public ResponseEntity excluir(@Parameter(description = "Id da sincronização") @PathVariable("id") Long id) {
         Optional<Sincronizacao> sincronizacao = service.getSincronizacaoById(id);
-        if (sincronizacao.isEmpty()) {
-            return new ResponseEntity<>("Sincronização não encontrada", HttpStatus.NOT_FOUND);
+        if (!sincronizacao.isPresent()) {
+            return new ResponseEntity("Sincronização não encontrada", HttpStatus.NOT_FOUND);
         }
         try {
             service.excluir(sincronizacao.get());
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
         } catch (RegraNegocioException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

@@ -4,6 +4,7 @@ import com.example.sgpoepapi.model.entity.DosesSemen;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.modelmapper.ModelMapper;
 
 @Data
 @AllArgsConstructor
@@ -16,12 +17,7 @@ public class DosesSemenDTO {
     private Long machoReprodutorId;
 
     public static DosesSemenDTO create(DosesSemen doses) {
-        DosesSemenDTO dto = new DosesSemenDTO();
-        dto.setId(doses.getId());
-        dto.setSemenSexado(doses.getSemenSexado());
-        dto.setNDoses(doses.getNDoses());
-        dto.setPrecoDose(doses.getPrecoDose());
-        if (doses.getMachoReprodutor() != null) dto.setMachoReprodutorId(doses.getMachoReprodutor().getId());
-        return dto;
+        ModelMapper modelMapper = new ModelMapper();
+        return modelMapper.map(doses, DosesSemenDTO.class);
     }
 }

@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,13 +14,13 @@ import java.util.stream.Collectors;
 public class TransferenciaEmbrioesDTO {
     private Long id;
     private Long projetoId;
-    private LocalDateTime dataEtapa;
-    private LocalDateTime horaInicio;
-    private LocalDateTime horaTermino;
+    private String dataEtapa;
+    private String horaInicio;
+    private String horaTermino;
     private List<Long> embrioesIds;
     private Long tecnicoClienteId;
     private Long tecnicoPrestadoraId;
-    private LocalDateTime horaEntregaEmb;
+    private String horaEntregaEmb;
 
     public static TransferenciaEmbrioesDTO create(TransferenciaEmbrioes transferencia) {
         TransferenciaEmbrioesDTO dto = new TransferenciaEmbrioesDTO();

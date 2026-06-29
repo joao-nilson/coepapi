@@ -4,8 +4,8 @@ import com.example.sgpoepapi.model.entity.MatrizReceptora;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.modelmapper.ModelMapper;
 
-import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -18,20 +18,11 @@ public class MatrizReceptoraDTO {
     private Long proprietarioId;
     private Integer numero;
     private Boolean prenha;
-    private LocalDateTime dataNascimento;
+    private String dataNascimento;
     private Integer nOocitos;
 
     public static MatrizReceptoraDTO create(MatrizReceptora receptora) {
-        MatrizReceptoraDTO dto = new MatrizReceptoraDTO();
-        dto.setId(receptora.getId());
-        dto.setNome(receptora.getNome());
-        dto.setRGD(receptora.getRGD());
-        if (receptora.getRaca() != null) dto.setRacaId(receptora.getRaca().getId());
-        if (receptora.getProprietario() != null) dto.setProprietarioId(receptora.getProprietario().getId());
-        dto.setNumero(receptora.getNumero());
-        dto.setPrenha(receptora.getPrenha());
-        dto.setDataNascimento(receptora.getDataNascimento());
-        dto.setNOocitos(receptora.getNOocitos());
-        return dto;
+        ModelMapper modelMapper = new ModelMapper();
+        return modelMapper.map(receptora, MatrizReceptoraDTO.class);
     }
 }

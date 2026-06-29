@@ -13,6 +13,11 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,6 +27,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/v1/projetos")
 @RequiredArgsConstructor
 @CrossOrigin
+@Tag(name = "Projetos", description = "API de gerenciamento de projetos")
 public class ProjetoController {
 
     private final ProjetoService service;
@@ -29,35 +35,51 @@ public class ProjetoController {
     private final ClienteService clienteService;
 
     @GetMapping()
-    public ResponseEntity<?> get() {
+    public ResponseEntity get() {
         List<Projeto> projetos = service.getProjetos();
         return ResponseEntity.ok(projetos.stream().map(ProjetoDTO::create).collect(Collectors.toList()));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> get(@PathVariable("id") Long id) {
+    @Operation(summary = "Obter detalhes de projeto pelo id")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Projeto encontrado"),
+            @ApiResponse(responseCode = "404", description = "Projeto não encontrado")
+    })
+    public ResponseEntity get(@Parameter(description = "Id do projeto") @PathVariable("id") Long id) {
         Optional<Projeto> projeto = service.getProjetoById(id);
-        if (projeto.isEmpty()) {
-            return new ResponseEntity<>("Projeto não encontrado", HttpStatus.NOT_FOUND);
+        if (!projeto.isPresent()) {
+            return new ResponseEntity("Projeto não encontrado", HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(projeto.map(ProjetoDTO::create));
     }
 
     @PostMapping()
-    public ResponseEntity<?> post(@RequestBody ProjetoDTO dto) {
+    @Operation(summary = "Salvar um novo registro de projeto")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Projeto salvo com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Erro de validação")
+    })
+    public ResponseEntity post(@RequestBody ProjetoDTO dto) {
         try {
             Projeto projeto = converter(dto);
             projeto = service.salvar(projeto);
-            return new ResponseEntity<>(projeto, HttpStatus.CREATED);
+            return new ResponseEntity(projeto, HttpStatus.CREATED);
         } catch (RegraNegocioException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<?> atualizar(@PathVariable("id") Long id, @RequestBody ProjetoDTO dto) {
-        if (service.getProjetoById(id).isEmpty()) {
-            return new ResponseEntity<>("Projeto não encontrado", HttpStatus.NOT_FOUND);
+    @Operation(summary = "Atualizar um registro de projeto")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Projeto atualizado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Erro de validação"),
+            @ApiResponse(responseCode = "404", description = "Projeto não encontrado")
+    })
+    public ResponseEntity atualizar(@Parameter(description = "Id do projeto") @PathVariable("id") Long id, @RequestBody ProjetoDTO dto) {
+        if (!service.getProjetoById(id).isPresent()) {
+            return new ResponseEntity("Projeto não encontrado", HttpStatus.NOT_FOUND);
         }
         try {
             Projeto projeto = converter(dto);
@@ -70,14 +92,20 @@ public class ProjetoController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<?> excluir(@PathVariable("id") Long id) {
+    @Operation(summary = "Excluir um registro de projeto")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Projeto excluído com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Erro ao excluir"),
+            @ApiResponse(responseCode = "404", description = "Projeto não encontrado")
+    })
+    public ResponseEntity excluir(@Parameter(description = "Id do projeto") @PathVariable("id") Long id) {
         Optional<Projeto> projeto = service.getProjetoById(id);
-        if (projeto.isEmpty()) {
-            return new ResponseEntity<>("Projeto não encontrado", HttpStatus.NOT_FOUND);
+        if (!projeto.isPresent()) {
+            return new ResponseEntity("Projeto não encontrado", HttpStatus.NOT_FOUND);
         }
         try {
             service.excluir(projeto.get());
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
         } catch (RegraNegocioException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

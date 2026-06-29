@@ -4,6 +4,7 @@ import com.example.sgpoepapi.model.entity.MetodoCongelamento;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.modelmapper.ModelMapper;
 
 @Data
 @AllArgsConstructor
@@ -14,10 +15,7 @@ public class MetodoCongelamentoDTO {
     private String descricao;
 
     public static MetodoCongelamentoDTO create(MetodoCongelamento metodo) {
-        MetodoCongelamentoDTO dto = new MetodoCongelamentoDTO();
-        dto.setId(metodo.getId());
-        dto.setNomeMetodo(metodo.getNomeMetodo());
-        dto.setDescricao(metodo.getDescricao());
-        return dto;
+        ModelMapper modelMapper = new ModelMapper();
+        return modelMapper.map(metodo, MetodoCongelamentoDTO.class);
     }
 }

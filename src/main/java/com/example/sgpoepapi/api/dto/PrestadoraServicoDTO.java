@@ -4,6 +4,7 @@ import com.example.sgpoepapi.model.entity.PrestadoraServico;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.modelmapper.ModelMapper;
 
 @Data
 @AllArgsConstructor
@@ -19,15 +20,7 @@ public class PrestadoraServicoDTO {
     private String instagram;
 
     public static PrestadoraServicoDTO create(PrestadoraServico prestadora) {
-        PrestadoraServicoDTO dto = new PrestadoraServicoDTO();
-        dto.setId(prestadora.getId());
-        dto.setNome(prestadora.getNome());
-        dto.setCNPJ(prestadora.getCNPJ());
-        dto.setEndereco(prestadora.getEndereco());
-        dto.setNumRegistroMapa(prestadora.getNum_registro_mapa());
-        dto.setTelefone(prestadora.getTelefone());
-        dto.setEmail(prestadora.getEmail());
-        dto.setInstagram(prestadora.getInstagram());
-        return dto;
+        ModelMapper modelMapper = new ModelMapper();
+        return modelMapper.map(prestadora, PrestadoraServicoDTO.class);
     }
 }

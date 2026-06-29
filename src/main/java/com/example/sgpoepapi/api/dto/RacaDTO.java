@@ -4,6 +4,7 @@ import com.example.sgpoepapi.model.entity.Raca;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.modelmapper.ModelMapper;
 
 @Data
 @AllArgsConstructor
@@ -14,10 +15,7 @@ public class RacaDTO {
     private Float fracao;
 
     public static RacaDTO create(Raca raca) {
-        RacaDTO dto = new RacaDTO();
-        dto.setId(raca.getId());
-        dto.setRaca(raca.getRaca());
-        dto.setFracao(raca.getFracao());
-        return dto;
+        ModelMapper modelMapper = new ModelMapper();
+        return modelMapper.map(raca, RacaDTO.class);
     }
 }

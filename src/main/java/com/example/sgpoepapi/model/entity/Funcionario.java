@@ -2,6 +2,7 @@ package com.example.sgpoepapi.model.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,6 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Funcionario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,4 +18,7 @@ public class Funcionario {
 
     private String nome;
     private String cargo;
+    private String login;
+    private String senha;
+    private boolean admin;
 }

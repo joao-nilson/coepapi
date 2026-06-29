@@ -4,6 +4,7 @@ import com.example.sgpoepapi.model.entity.QualidadeEmbriao;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.modelmapper.ModelMapper;
 
 @Data
 @AllArgsConstructor
@@ -13,9 +14,7 @@ public class QualidadeEmbriaoDTO {
     private String qualidade;
 
     public static QualidadeEmbriaoDTO create(QualidadeEmbriao qualidade) {
-        QualidadeEmbriaoDTO dto = new QualidadeEmbriaoDTO();
-        dto.setId(qualidade.getId());
-        dto.setQualidade(qualidade.getQualidade());
-        return dto;
+        ModelMapper modelMapper = new ModelMapper();
+        return modelMapper.map(qualidade, QualidadeEmbriaoDTO.class);
     }
 }

@@ -4,6 +4,7 @@ import com.example.sgpoepapi.model.entity.MachoReprodutor;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.modelmapper.ModelMapper;
 
 @Data
 @AllArgsConstructor
@@ -18,14 +19,7 @@ public class MachoReprodutorDTO {
     private Float precoDose;
 
     public static MachoReprodutorDTO create(MachoReprodutor macho) {
-        MachoReprodutorDTO dto = new MachoReprodutorDTO();
-        dto.setId(macho.getId());
-        dto.setNome(macho.getNome());
-        dto.setRGD(macho.getRGD());
-        if (macho.getRaca() != null) dto.setRacaId(macho.getRaca().getId());
-        if (macho.getProprietario() != null) dto.setProprietarioId(macho.getProprietario().getId());
-        dto.setSemenSexado(macho.getSemenSexado());
-        dto.setPrecoDose(macho.getPrecoDose());
-        return dto;
+        ModelMapper modelMapper = new ModelMapper();
+        return modelMapper.map(macho, MachoReprodutorDTO.class);
     }
 }

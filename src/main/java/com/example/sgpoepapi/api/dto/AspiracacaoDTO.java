@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,9 +14,9 @@ import java.util.stream.Collectors;
 public class AspiracacaoDTO {
     private Long id;
     private Long projetoId;
-    private LocalDateTime dataEtapa;
-    private LocalDateTime horaInicio;
-    private LocalDateTime horaTermino;
+    private String dataEtapa;
+    private String horaInicio;
+    private String horaTermino;
     private List<Long> doadorasIds;
     private List<Long> oocitosIds;
     private Long proprietarioClienteId;

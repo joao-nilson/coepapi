@@ -19,7 +19,7 @@ public class Cliente {
 
     private String nome;
     private String CPF;
-    private String inscriaao_estadual;
+    private String inscricaoEstadual;
     private String endereco;
     private String telefone;
     private String email;

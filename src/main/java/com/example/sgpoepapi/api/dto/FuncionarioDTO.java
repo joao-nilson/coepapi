@@ -4,20 +4,24 @@ import com.example.sgpoepapi.model.entity.Funcionario;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.modelmapper.ModelMapper;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class FuncionarioDTO {
+
     private Long id;
     private String nome;
     private String cargo;
+    private String login;
+    private String senha;
+    private String senhaRepeticao;
+    private boolean admin;
 
     public static FuncionarioDTO create(Funcionario funcionario) {
-        FuncionarioDTO dto = new FuncionarioDTO();
-        dto.setId(funcionario.getId());
-        dto.setNome(funcionario.getNome());
-        dto.setCargo(funcionario.getCargo());
+        ModelMapper modelMapper = new ModelMapper();
+        FuncionarioDTO dto = modelMapper.map(funcionario, FuncionarioDTO.class);
         return dto;
     }
 }

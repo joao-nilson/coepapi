@@ -13,6 +13,11 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,6 +27,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/v1/machosreprodutores")
 @RequiredArgsConstructor
 @CrossOrigin
+@Tag(name = "Machos Reprodutores", description = "API de gerenciamento de machos reprodutores")
 public class MachoReprodutorController {
 
     private final MachoReprodutorService service;
@@ -29,35 +35,51 @@ public class MachoReprodutorController {
     private final ClienteService clienteService;
 
     @GetMapping()
-    public ResponseEntity<?> get() {
+    public ResponseEntity get() {
         List<MachoReprodutor> machos = service.getMachosReprodutores();
         return ResponseEntity.ok(machos.stream().map(MachoReprodutorDTO::create).collect(Collectors.toList()));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> get(@PathVariable("id") Long id) {
+    @Operation(summary = "Obter detalhes de macho reprodutor pelo id")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Macho reprodutor encontrado"),
+            @ApiResponse(responseCode = "404", description = "Macho reprodutor não encontrado")
+    })
+    public ResponseEntity get(@Parameter(description = "Id do macho reprodutor") @PathVariable("id") Long id) {
         Optional<MachoReprodutor> macho = service.getMachoReprodutorById(id);
-        if (macho.isEmpty()) {
-            return new ResponseEntity<>("Macho reprodutor não encontrado", HttpStatus.NOT_FOUND);
+        if (!macho.isPresent()) {
+            return new ResponseEntity("Macho reprodutor não encontrado", HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(macho.map(MachoReprodutorDTO::create));
     }
 
     @PostMapping()
-    public ResponseEntity<?> post(@RequestBody MachoReprodutorDTO dto) {
+    @Operation(summary = "Salvar um novo registro de macho reprodutor")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Macho reprodutor salvo com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Erro de validação")
+    })
+    public ResponseEntity post(@RequestBody MachoReprodutorDTO dto) {
         try {
             MachoReprodutor macho = converter(dto);
             macho = service.salvar(macho);
-            return new ResponseEntity<>(macho, HttpStatus.CREATED);
+            return new ResponseEntity(macho, HttpStatus.CREATED);
         } catch (RegraNegocioException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<?> atualizar(@PathVariable("id") Long id, @RequestBody MachoReprodutorDTO dto) {
-        if (service.getMachoReprodutorById(id).isEmpty()) {
-            return new ResponseEntity<>("Macho reprodutor não encontrado", HttpStatus.NOT_FOUND);
+    @Operation(summary = "Atualizar um registro de macho reprodutor")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Macho reprodutor atualizado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Erro de validação"),
+            @ApiResponse(responseCode = "404", description = "Macho reprodutor não encontrado")
+    })
+    public ResponseEntity atualizar(@Parameter(description = "Id do macho reprodutor") @PathVariable("id") Long id, @RequestBody MachoReprodutorDTO dto) {
+        if (!service.getMachoReprodutorById(id).isPresent()) {
+            return new ResponseEntity("Macho reprodutor não encontrado", HttpStatus.NOT_FOUND);
         }
         try {
             MachoReprodutor macho = converter(dto);
@@ -70,14 +92,20 @@ public class MachoReprodutorController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<?> excluir(@PathVariable("id") Long id) {
+    @Operation(summary = "Excluir um registro de macho reprodutor")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Macho reprodutor excluído com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Erro ao excluir"),
+            @ApiResponse(responseCode = "404", description = "Macho reprodutor não encontrado")
+    })
+    public ResponseEntity excluir(@Parameter(description = "Id do macho reprodutor") @PathVariable("id") Long id) {
         Optional<MachoReprodutor> macho = service.getMachoReprodutorById(id);
-        if (macho.isEmpty()) {
-            return new ResponseEntity<>("Macho reprodutor não encontrado", HttpStatus.NOT_FOUND);
+        if (!macho.isPresent()) {
+            return new ResponseEntity("Macho reprodutor não encontrado", HttpStatus.NOT_FOUND);
         }
         try {
             service.excluir(macho.get());
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
         } catch (RegraNegocioException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
